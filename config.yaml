@@ -16,28 +16,48 @@ points:
         padding: 1ky
         spread: 1kx
       columns:
-        # Hide the first two mods and the last mod.
-        # Provide a Sofle-like column stagger.
         outer:
           rows.mod.skip: true
+          key.column_net: P14
         pinky:
           rows.mod.skip: true
+          key.column_net: P16
         ring:
-          key.stagger: 5
+          key:
+            stagger: 5
+            column_net: P10
+          rows.mod.column_net: P16
         middle:
-          key.stagger: 2.5
+          key:
+            stagger: 2.5
+            column_net: P7
+          rows.mod.column_net: P10
         index:
-          key.stagger: -2.5
+          key:
+            stagger: -2.5
+            column_net: P8
+          rows.mod.column_net: P7
         inner:
           rows.mod.skip: true
-          key.stagger: -2.5
+          key:
+            stagger: -2.5
+            column_net: P9
       rows:
-        # Four main rows, one partial row.
         mod:
+          row_net: P15
+          mirror.row_net: P6
         bottom:
+          row_net: P18
+          mirror.row_net: P5
         home:
+          row_net: P19
+          mirror.row_net: P4
         top:
+          row_net: P20
+          mirror.row_net: P0
         num:
+          row_net: P21
+          mirror.row_net: P1
     # Thumb cluster for Layer and Space keys.
     thumbs:
       # Choc spacing
@@ -49,23 +69,25 @@ points:
         ref: matrix_inner_mod
         shift: [2, -2]
       columns:
-        # Fan thumbs out by -15 degrees.
         layer:
-          key.splay: -15
-        # Spacebar uses a 1.5 wide key.
+          key:
+            splay: -15
+            column_net: P8
         space:
           key:
             width: 1.5kx
             splay: 75
             shift: [2.5,-3.25]
+            column_net: P9
       rows:
-        # Thumbs only have one row.
         cluster:
+          row_net: P15
+          mirror.row_net: P6
   # Mirror keyboard halves with a moderate rotation.
   rotate: -20
   mirror: &mirror
     ref: matrix_inner_num
-    distance: 2.5kx
+    distance: 2kx
 outlines:
   # Pure key outline.
   raw:
@@ -92,6 +114,10 @@ outlines:
           shift: [0.5px,0.5py]
         - ref: matrix_inner_num
           shift: [0.5px,0.5py]
+        - ref: matrix_inner_top
+          shift: [0.5px,0.5py]
+        - ref: mirror_matrix_inner_top
+          shift: [0.5px,0.5py]
         - ref: mirror_matrix_inner_num
           shift: [0.5px,0.5py]
         - ref: mirror_matrix_middle_num
@@ -110,6 +136,10 @@ outlines:
           shift: [-0.5px,-0.5py]
         - ref: mirror_thumbs_space_cluster
           shift: [-0.5py,-0.5px]
+        - ref: mirror_thumbs_space_cluster
+          shift: [0.5py,-0.5px]
+        - ref: thumbs_space_cluster
+          shift: [0.5py,-0.5px]
         - ref: thumbs_space_cluster
           shift: [-0.5py,-0.5px]
         - ref: thumbs_layer_cluster
@@ -139,3 +169,78 @@ pcbs:
           hotswap: true
           from: "{{column_net}}"
           to: "{{colrow}}"
+      diode:
+        what: diode
+        where: true
+        params:
+          from: "{{colrow}}"
+          to: "{{row_net}}"
+        adjust:
+          shift: [0, -5]
+      promicro:
+        what: promicro
+        params:
+          orientation: "down"
+        where:
+          ref.aggregate.parts: [matrix_inner_home, mirror_matrix_inner_home]
+          shift: [0,0]
+          rotate: -90
+      oled:
+        what: oled
+        params:
+          side: "F"
+          SDA: P2
+          SCL: P3
+        where:
+          ref.aggregate.parts: [matrix_inner_home, mirror_matrix_inner_home]
+          shift: [-6,-19]
+          rotate: 90
+      reset:
+        what: button
+        params:
+          from: GND
+          to: RST
+        where:
+          ref.aggregate.parts: [matrix_index_mod, mirror_matrix_index_mod]
+          shift: [0, -1]
+          rotate: -90
+      holeTopLeft:
+        what: mountinghole
+        where:
+          ref: [matrix_outer_num]
+          shift: [0.5kx, -0.3ky]
+      holeBottomLeft:
+        what: mountinghole
+        where:
+          ref: [matrix_outer_bottom]
+          shift: [0.5kx, -0.3ky]
+      holeTopInnerLeft:
+        what: mountinghole
+        where:
+          ref: [matrix_index_num]
+          shift: [0.5kx, -0.4ky]
+      holeBottomInnerLeft:
+        what: mountinghole
+        where:
+          ref: [matrix_index_mod]
+          shift: [0.5kx, -0.35ky]
+      holeTopRight:
+        what: mountinghole
+        where:
+          ref: [mirror_matrix_outer_num]
+          shift: [0.5kx, -0.3ky]
+      holeBottomRight:
+        what: mountinghole
+        where:
+          ref: [mirror_matrix_outer_bottom]
+          shift: [0.5kx, -0.3ky]
+      holeTopInnerRight:
+        what: mountinghole
+        where:
+          ref: [mirror_matrix_index_num]
+          shift: [0.5kx, -0.4ky]
+      holeBottomInnerRight:
+        what: mountinghole
+        where:
+          ref: [mirror_matrix_index_mod]
+          shift: [0.5kx, -0.35ky]
